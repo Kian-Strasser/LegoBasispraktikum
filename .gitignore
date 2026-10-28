@@ -218,3 +218,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+
+# EV3 
+__pycache__/
+*.pyc
+.venv/
+
+# Mac
+.DS_Store
