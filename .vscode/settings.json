@@ -1,7 +1,13 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-	"files.eol": "\n",
-	"debug.openDebug": "neverOpen",
-	"python.linting.enabled": false,
-	"python.languageServer": "None"
+    "files.eol": "\n",
+    "debug.openDebug": "neverOpen",
+    "python.linting.enabled": false,
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "editor.hover.enabled": "on",
+    "editor.parameterHints.enabled": true,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
+    }
 }
