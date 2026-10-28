@@ -17,5 +17,5 @@ ev3 = EV3Brick()
 
 left_motor = Motor(Port.A)
 right_motor = Motor(Port.B)
-left_motor.run_target(500, 90)
-right_motor.run_target(500, 90)
+left_motor.run_time(500, 2)
+right_motor.run_time(500, 2)
