@@ -15,7 +15,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 # Create your objects here.
 ev3 = EV3Brick()
 
-
-# Write your program here.
-ev3.screen.draw_text(40, 50, "Hello World")
-wait(2000)
+left_motor = Motor(Port.A)
+right_motor = Motor(Port.B)
+left_motor.run_target(500, 90)
+right_motor.run_target(500, 90)
