@@ -17,5 +17,5 @@ ev3 = EV3Brick()
 
 
 # Write your program here.
-ev3.screen.draw_text("Hello World")
+ev3.screen.draw_text(40, 50, "Hello World")
 wait(2000)
