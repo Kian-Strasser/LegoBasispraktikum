@@ -21,6 +21,8 @@ right_motor = Motor(Port.B)
 left_motor.control.limits(actuation=100)
 right_motor.control.limits(actuation=100)
 
+color_sensor = ColorSensor(Port.S1)
+
 
 robot = DriveBase(
     left_motor=left_motor,
@@ -69,3 +71,22 @@ wait(1000)
 ev3.screen.clear()
 ev3.screen.print("TEST FERTIG!")
 ev3.speaker.beep(frequency=1000, duration=500)
+
+
+# Color Sensor Test
+
+while True:
+    # Use the boolean to determine the message
+    if color_sensor.color == Color.WHITE:
+        message = "White"
+    else:
+        message = "Not White"
+        
+    print(message)
+    
+    # Display on the EV3 screen
+    ev3.screen.clear()
+    ev3.screen.print(message)
+    
+    # Short delay to prevent screen flickering
+    wait(100)
