@@ -6,7 +6,7 @@ from pybricks.tools import wait
 
 LEFT_MOTOR_PORT = Port.A
 RIGHT_MOTOR_PORT = Port.B
-COLOR_SENSOR_PORT = Port.S1
+COLOR_SENSOR_PORT = Port.S2
 
 # color of the band at the end of a section
 BAND_COLOR = Color.BLUE
