@@ -2,6 +2,8 @@
 {
     "files.eol": "\n",
     "debug.openDebug": "neverOpen",
+    // only the code goes onto the brick, not the exercise sheets, model, etc.
+    "ev3devBrowser.download.include": "src/**/*.py",
     "python.linting.enabled": false,
     "python.languageServer": "Pylance",
     "python.analysis.typeCheckingMode": "off",

@@ -37,6 +37,7 @@ while True:
         name, run = ROUTINES[current]
         robot.show("Abschnitt %d:" % (current + 1), name, "", "Enter: Menue")
         robot.off_band = False
+        robot.band_interval = 0
         try:
             run(robot)
         except BandCrossed:
