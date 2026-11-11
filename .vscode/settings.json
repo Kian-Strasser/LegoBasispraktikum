@@ -4,7 +4,7 @@
     "debug.openDebug": "neverOpen",
     "python.linting.enabled": false,
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "editor.hover.enabled": "on",
     "editor.parameterHints.enabled": true,
     "python.analysis.diagnosticSeverityOverrides": {
