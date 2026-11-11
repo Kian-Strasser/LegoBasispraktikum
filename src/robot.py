@@ -1,6 +1,6 @@
 from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, GyroSensor
-from pybricks.parameters import Port, Color, Button, Direction
+from pybricks.parameters import Port, Button, Direction
 from pybricks.robotics import DriveBase
 from pybricks.tools import wait, StopWatch
 
@@ -9,8 +9,10 @@ RIGHT_MOTOR_PORT = Port.B
 COLOR_SENSOR_PORT = Port.S2
 GYRO_SENSOR_PORT = Port.S1
 
-# color of the band at the end of a section
-BAND_COLOR = Color.BLUE
+# blue band at the end of a section, from rgb() (measured on the parcours):
+# band has b 32-54 and b/r > 3.5, the edge of the black line has b/r < 1.6
+BAND_MIN_BLUE = 28
+BAND_BLUE_RATIO = 2
 
 LINE_HEIGHT = 20
 
@@ -43,6 +45,9 @@ class Robot:
         )
         self.drive_base.settings(straight_speed=200, straight_acceleration=400)
         self.off_band = False
+        # ms between band checks, 0 = on every check()
+        self.band_interval = 0
+        self.band_timer = StopWatch()
 
         # the gyro calibrates at startup -> don't move the robot
         self.show("Gyro kalibriert...", "nicht bewegen!")
@@ -56,13 +61,24 @@ class Robot:
         """
         if Button.CENTER in self.ev3.buttons.pressed():
             raise Abort()
-        if self.color_sensor.color() != BAND_COLOR:
+        if self.band_timer.time() < self.band_interval:
+            return
+        self.band_timer.reset()
+        if not self.on_band():
             self.off_band = True
         elif self.off_band:
             # only counts after we were off the band, otherwise a section
             # that starts on the band would end right away
             self.off_band = False
             raise BandCrossed()
+
+    def on_band(self):
+        """True if the color sensor is on the blue band.
+
+        color() is not enough, it also says BLUE on the edge of the black line.
+        """
+        r, g, b = self.color_sensor.rgb()
+        return b >= BAND_MIN_BLUE and b > BAND_BLUE_RATIO * r
 
     def wait(self, ms):
         """Like wait() from pybricks, but can be aborted."""
