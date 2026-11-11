@@ -20,7 +20,7 @@ ROUTINES = {
     Section.LINE_FOLLOW: ("Linienfolgen", line_follow.run),
     Section.PUSH_CYLINDER: ("Zylinder schieben", push_cylinder.run),
     Section.BRIDGE: ("Bruecke", bridge.run),
-    Section.COLOR_SEARCH: ("Farbfeldsuche", color_search.run),
+    Section.COLOR_SEARCH: ("Farbfeldsuche", color_search.run)
 }
 
 robot = Robot()
