@@ -9,18 +9,18 @@ class Section:
     # MicroPython has no Enum, so just constants.
     # The numbers are the order in the parcours.
     LINE_FOLLOW = 0
-    COLOR_SEARCH = 1
     PUSH_CYLINDER = 2
     BRIDGE = 3
+    COLOR_SEARCH = 1
 
 
 # new section: create a file in sections/ with a run(robot) function,
 # then add it to Section above and here
 ROUTINES = {
     Section.LINE_FOLLOW: ("Linienfolgen", line_follow.run),
-    Section.COLOR_SEARCH: ("Farbfeldsuche", color_search.run),
     Section.PUSH_CYLINDER: ("Zylinder schieben", push_cylinder.run),
     Section.BRIDGE: ("Bruecke", bridge.run),
+    Section.COLOR_SEARCH: ("Farbfeldsuche", color_search.run)
 }
 
 robot = Robot()
