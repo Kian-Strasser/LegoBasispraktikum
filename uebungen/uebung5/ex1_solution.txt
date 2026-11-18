@@ -1,0 +1,56 @@
+1) Praeemptives Multitasking:
+    - Betriebssystem (OS) hat durchgehend die Kontrolle
+        - Ein Prozess, der gerade die CPU nutzt, kann also jederzeit vom OS unterbrochen werden
+            ==> Das muss beim Entwickeln JEDERZEIT beruecksichtigt werden
+    ==> Prozesse (vorallem schaedliche) koennen das System somit nicht blockieren
+
+    - nutzt Interrupts:
+        - Jeder Prozess hat einen "Time Slice"
+        - sobald dieser ablaeuft, oder ein Interrupt kommt, wird dem Prozess die CPU entzogen
+
+    - Kontext- / Prozesswechsel:
+        - Scheduler speichert aktuellen Zustand des unterbrochen Prozess (CPU-Register, PC, Stack-Pointer)
+            - wird im RAM gespeichert
+        - laedt danach naechsten Prozess
+
+    - benoetigt Systemressourcen, auf welche NUR der Scheduler (OS) zugriff hat (sowas wie Speicherbedarf, Timeinterrupts)
+        !!! Das ist bei einem Microcontroller gar nicht möglich !!!
+
+
+---
+
+
+2) Kooperatives Multitasking:
+    - Scheduler (OS) gibt volle Kontrolle an Prozesse ab (vertraut)
+        - ist darauf angewiesen, dass ein Prozess dann seine Kontrolle "freiwillig" wieder abgibt (Gefahr vor Blockierung - schaedliche Prozesse)
+    ==> OS ist auf die KOOPERATION der Prozesse angewiesen
+
+    - ist deterministisch
+        ==> dadurch besser zeitlich und logisch vorhersehbar
+
+    - ist ressourcenschonender 
+
+    - nutzt `yield`
+
+
+---
+
+
+3) Unterscheid zwsichen diesen beiden:
+    - `yield` (Kooperatives) vs. `interrupt` (Praeemptives)
+        ==> OS gibt komplette Kontrolle ab (Kooperatives) vs. OS hat volle Kontrolle (Praeemptives)
+
+    - Ressourcenbedarf: sehr gering vs. hoher Overhead
+
+---
+
+
+4) Warum praeemptives Multitasking NICHT füer Microcontroller geeignet?
+    - Knapper / Geringer Arbeitsspeicher vorhanden
+        ==> durch den Scheduler und die Interrupts geht viel durchs abspeichern des aktuellen Zustands "verloren"
+
+    - Deutlich hoeherer Rechenaufwand
+        ==> Das Sichern und Wiederherstellen ist aufwendig in der Rechenzeit
+
+    - Fehlender klarer Determinismus
+        ==> Durch unvorhersehbare Interrupts
