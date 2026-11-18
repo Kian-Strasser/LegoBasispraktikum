@@ -13,6 +13,9 @@ GYRO_SENSOR_PORT = Port.S1
 # band has b 32-54 and b/r > 3.5, the edge of the black line has b/r < 1.6
 BAND_MIN_BLUE = 28
 BAND_BLUE_RATIO = 2
+# it only counts as the band if this many readings in a row say so
+BAND_READINGS = 3
+BAND_READING_WAIT = 20  # ms between them
 
 LINE_HEIGHT = 20
 
@@ -40,8 +43,9 @@ class Robot:
         self.drive_base = DriveBase(
             left_motor=self.left_motor,
             right_motor=self.right_motor,
-            wheel_diameter=31.3,  # in mm, including the track (calibrated)
-            axle_track=200,       # track width in mm
+            # wheels 56 mm, tracks were 31.3 (calibrated) and 200
+            wheel_diameter=56,    # in mm
+            axle_track=135,       # wheel centre to wheel centre in mm
         )
         self.drive_base.settings(straight_speed=200, straight_acceleration=400)
         self.off_band = False
@@ -77,8 +81,15 @@ class Robot:
 
         color() is not enough, it also says BLUE on the edge of the black line.
         """
-        r, g, b = self.color_sensor.rgb()
-        return b >= BAND_MIN_BLUE and b > BAND_BLUE_RATIO * r
+        # one reading is not enough either: red and blue are measured one
+        # after the other, so crossing from board to line while turning can
+        # give low red and high blue for a moment
+        for _ in range(BAND_READINGS):
+            r, g, b = self.color_sensor.rgb()
+            if b < BAND_MIN_BLUE or b <= BAND_BLUE_RATIO * r:
+                return False
+            wait(BAND_READING_WAIT)
+        return True
 
     def wait(self, ms):
         """Like wait() from pybricks, but can be aborted."""
