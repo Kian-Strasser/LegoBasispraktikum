@@ -1,0 +1,59 @@
+1.) Linienverfolgung
+    
+    1.1.) Luecken ueberwinden:
+            - Pruefen, ob Linie wieder gefunden wurde
+            - Pruefen, ob eine maximale Suchstrecke überwunden wurde (geht sonst in einen Suchmodus uebe)
+    
+    1.2) Hindernis erkennen & anschliessend umfahren
+        1.2.1) Hindernis erkennen:
+                - Linie folgen (normaler Algo)
+                - Pruefen, ob der Beruehrungssensor gegen ein Hindernis faehrt (wechsel danach in einen "Hindernis umfahren"-Modus
+        1.2.2) erkanntes Hindernis umfahren:
+                - Pruefen, ob Linie wieder gefunden wurde
+                - Pruefen, ob der zu umfahrende Bogen bereits abgeschlossen ist (findet man die Linie nicht, geht man in einen Suchmodus)
+
+---
+
+
+2) Dose
+
+    2.1.) Dose lokalisieren:
+        - Pruefen, ob ploetzlicher Unterschied (im Abstand) im Ultraschallsensor gemessen wird (Dose erkannt)
+        - Pruefen, ob 360° bereits gedreht wurden (gesamter Raum gescannt)
+
+    2.2.) Dose greifen:
+        2.2.1) Dose anfahren:
+            - Prufen, ob Beruehrungssensor an Dose anliegt
+            - Prufen, ob maximale zu fahrende Distanz ueberwunden wurde
+        2.2.2) Greifarm schliessen:
+            - Pruefen, ob Dose gepackt ist
+            - Pruefen, ob max. Drehwinkel ueberschritten wurde
+
+    2.3.) Dose in markierte Box bringen:
+        - Pruefen, ob Farbsensor die markierte Box erreicht hat
+        - Pruefen, wo sich der Roboter mit dem Ultraschallsensor befindet (Abstand zu Waenden)
+
+
+---
+
+
+3) Bruecke
+
+    3.1) Brueckensteigung fahren:
+        - Pruefen, ob sich der Abstand des Ultraschallsensors erhoeht (faehrt Bruecke hoch) und am Ende wieder gering ist (Brueke oben wurde erreicht)
+        - Pruefen, ob der Gyro gerade bleibt bzw. stark ausschlaegt
+
+    3.2) Bruecke (oben) ueberqueren:
+        - Prufen, ob der Gyro gerade bleibt
+        - Pruefen, ob der Ultraschallsensor das Brueckenende erreicht (auf der Bruecke ist Distanz zum Boden gleich, am Ende ist Ultraschallsensor ueber die Neigung nach unten)
+
+
+---
+
+
+4) Farbfelder
+
+    4.1) Suche und Reihenfolge:
+        - Pruefen, ob die korrekte Farbe gefunden wurde
+        - Pruefen, ob man durch den gesamten Raum gefahren ist (mit dem Abstandsensor an die Wand)
+        [- Pruefen, ob der Beruehrungssensor eine Wand erwischt, um weiter den Raum abzusuchen]
