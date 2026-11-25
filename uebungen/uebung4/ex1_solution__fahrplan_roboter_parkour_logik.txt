@@ -31,7 +31,7 @@
 
     2.3.) Dose in markierte Box bringen:
         - Pruefen, ob Farbsensor die markierte Box erreicht hat
-        - Pruefen, wo sich der Roboter mit dem Ultraschallsensor befindet (Abstand zu Waenden)
+        - Pruefen, wo sich der Roboter mit dem Ultraschallsensor befindet (Abstand zu Waenden)  --> eher unnoetig
 
 
 ---
@@ -56,4 +56,4 @@
     4.1) Suche und Reihenfolge:
         - Pruefen, ob die korrekte Farbe gefunden wurde
         - Pruefen, ob man durch den gesamten Raum gefahren ist (mit dem Abstandsensor an die Wand)
-        [- Pruefen, ob der Beruehrungssensor eine Wand erwischt, um weiter den Raum abzusuchen]
+        - Pruefen, ob der Beruehrungssensor eine Wand erwischt, um weiter den Raum abzusuchen]
