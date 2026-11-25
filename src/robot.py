@@ -67,6 +67,14 @@ class Robot:
             raise Abort()
         if self.band_timer.time() < self.band_interval:
             return
+        self.check_band()
+
+    def check_band(self):
+        """Raises BandCrossed if the sensor is on the band.
+
+        check() calls it every band_interval ms, a section can also call it
+        itself when the band is likely, e.g. the line follower when it gets dark.
+        """
         self.band_timer.reset()
         if not self.on_band():
             self.off_band = True

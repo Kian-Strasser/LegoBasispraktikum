@@ -15,14 +15,27 @@ THRESHOLD = (BLACK_VALUE + WHITE_VALUE) / 2
 # PARAMETER FOR PID CONTROLLER
 KP = 1.2 # P-Coeffizient increased: faster response to deviations
 KD = 0.8 # D-Coeffizient increased: faster response to changes in deviation
+# second stage: far off the edge (almost all white or all board) it turns
+# harder, KP alone was too weak for a sharp right curve at 80 mm/s and the
+# sensor slid across the whole line. near the edge nothing changes
+KP_FAR_START = 12  # |error| from which the extra turn starts (was 15)
+KP_FAR = 5         # extra deg/s per unit of error above that (was 3, not
+                   # enough for the sharp right curve at 100 mm/s)
 
 # PARAMETERS FOR SPEED CONTROL (in mm/s)
-BASE_SPEED = 60 # base speed for straight sections
-MIN_SPEED = 15  # minimum speed to prevent stalling in sharp turns
+BASE_SPEED = 100 # base speed for straight sections (was 60, then 80)
+MIN_SPEED = 20  # minimum speed to prevent stalling in sharp turns (was 15)
+# no slowing down for small errors, then SLOW_DOWN mm/s less per unit of
+# error, so it still gets down to MIN_SPEED at the largest error (27)
+# (was 2.5 per unit from 0 on, that braked a lot on straights)
+SLOW_DOWN_START = 8
+SLOW_DOWN = 4.2
 
 # the band check switches the sensor mode away from reflection() and back,
-# that costs about 70 ms, so only do it every BAND_INTERVAL ms
-BAND_INTERVAL = 250
+# that costs about 70 ms. the band (2-3 cm) is dark in reflection(), so it is
+# checked whenever the sensor gets dark, the timed check is only a fallback
+# (250 alone could drive over the band between two checks)
+BAND_INTERVAL = 1000
 
 
 #################################################
@@ -38,9 +51,10 @@ HEADING_SMOOTHING = 0.05  # share of the new gyro value in the average heading
 
 LOST_ADVANCE = 15   # mm straight on past the end of the line before turning
                     # (30 with tracks, the sensor sits further forward now)
-CORNER_ANGLE = 90   # degrees to turn left looking for a corner before it is a gap
-SEARCH_RATE = 45    # deg/s while looking for the line
-TURN_RATE = 45      # deg/s when turning back
+CORNER_ANGLE = 110  # degrees to turn left looking for a corner before it is a gap
+                    # (90 missed a sharp left curve just past the limit)
+SEARCH_RATE = 60    # deg/s while looking for the line (was 45)
+TURN_RATE = 60      # deg/s when turning back (was 45)
 TURN_SLOW_RATE = 15  # deg/s for the last 20 degrees
 TURN_LEAD = 1       # degrees, stop this early, the robot turns on after braking
                     # (must stay below TURN_TOLERANCE, or a correction can stall)
@@ -53,7 +67,7 @@ GYRO_MIN_CHANGE = 5  # degrees, the gyro jitters by about 3 when standing
 GYRO_TIMEOUT = 2000  # ms
 
 GAP_MAX = 150       # mm to drive straight over a gap (gaps are 100 at most)
-GAP_SPEED = 60      # mm/s over a gap
+GAP_SPEED = 80      # mm/s over a gap (was 60)
 GAP_KP = 3          # gyro correction over a gap, same as Robot.straight()
 GAP_BIAS = 8        # degrees to the left of the heading, so the sensor runs
                     # onto the line after the gap and not along its edge;
@@ -181,6 +195,7 @@ def run(robot: Robot):
     # average gyro angle while following, the follower always swings a bit
     heading = robot.gyro.angle()
     dark_timer = StopWatch()
+    was_bright = True
 
     # Start the line follower (beep, the section name is already on the display)
     robot.ev3.speaker.beep(frequency=1000, duration=200)
@@ -198,7 +213,13 @@ def run(robot: Robot):
             find_line(robot, heading)
             heading = robot.gyro.angle()
             dark_timer.reset()
+            was_bright = True
             continue
+
+        # just got dark: the board or the band
+        if brightness < DARK_VALUE and was_bright:
+            robot.check_band()
+        was_bright = brightness >= DARK_VALUE
 
         # 1. Calculate error
         error = brightness - THRESHOLD
@@ -209,10 +230,14 @@ def run(robot: Robot):
 
         # 3. Calculate turn rate
         turn_rate = (error * KP) + (derivative * KD)
+        if abs(error) > KP_FAR_START:
+            far = (abs(error) - KP_FAR_START) * KP_FAR
+            turn_rate += far if error > 0 else -far
 
         #4. Dynamic curve break
         # Bremst bei Abweichung scharf ab, damit der Roboter nicht aus der Bahn fliegt
-        speed = max(MIN_SPEED, BASE_SPEED - (abs(error) * 2.5))
+        slow_down = max(0, abs(error) - SLOW_DOWN_START) * SLOW_DOWN
+        speed = max(MIN_SPEED, BASE_SPEED - slow_down)
 
         #5. Drive the robot
         robot.drive_base.drive(int(speed), int(turn_rate))
